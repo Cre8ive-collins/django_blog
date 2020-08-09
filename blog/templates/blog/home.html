@@ -1,0 +1,41 @@
+{% extends "blog/layout.html" %}
+    {% block content %}
+        {% for post in posts %}
+            <article class="media content-section">
+                <img src="{{ post.author.profile.image.url }}" alt="Profile Image" class="rounded-circle" width="60rem">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a href="#" class="mr-2">{{ post.author }}</a>
+                        <small class="text-muted">{{ post.date_posted | date:"F d, Y"}}</small>
+                    </div>
+                    <h2><a href="{% url 'post-detail' post.id %}" class="article-title">{{ post.title }}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+                </div>
+            </article>
+        {% endfor %}
+        {% if is_paginated %}
+        
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="btn btn-outline-success mb-2">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-success mb-2">Previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="text-success">.....</span>
+                    <a href="?page={{ num }}" class="btn btn-success mb-2">{{ num }}</a>
+                    <span class="text-success">.....</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}" class="btn btn-outline-success mb-2">{{ num }}</a>
+                {% endif %}
+                
+            {% endfor %}
+
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-success mb-2">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-success mb-2">Last</a>
+            
+            {% endif %}
+        {% endif %}
+    {% endblock content %}
